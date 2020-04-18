@@ -2,16 +2,17 @@
   "name": "github-timeline",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "dist/server/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc -p .",
-    "start": "npm run build && node ."
+    "start": "npm run build && nodemon ."
   },
   "author": "dev-mev",
   "license": "ISC",
   "dependencies": {
     "@octokit/graphql": "^4.3.1",
+    "@types/jquery": "^3.3.35",
     "@typescript-eslint/eslint-plugin": "^2.27.0",
     "core-util-is": "^1.0.2",
     "express": "^4.17.1",

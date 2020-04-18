@@ -3,8 +3,9 @@ import express from "express";
 
 require("dotenv").config();
 
-async function main(req: express.Request, res: express.Response) {
+const router = express.Router();
 
+async function getUserData(username: string) {
   const result = await graphql({
     query: `query($number_of_repos:Int!, $username: String!){
       user(login: $username) {
@@ -18,13 +19,17 @@ async function main(req: express.Request, res: express.Response) {
          }
        }
     }`,
-    username: 'dev-mev',
+    username: username,
     number_of_repos: 10,
     headers: {
       authorization: `token ${process.env.TOKEN}`
     }
   })
-  res.json(result);
+  return result;
 }
 
-export = main;
+router.get("/api/users/:username", async function (req: express.Request, res: express.Response) {
+  res.json(await getUserData(req.params.username));
+});
+
+module.exports = router;
