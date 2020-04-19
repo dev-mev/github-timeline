@@ -15,6 +15,7 @@ async function getUserData(username: string) {
              name
              createdAt
              description
+             url
            }
          }
        }
