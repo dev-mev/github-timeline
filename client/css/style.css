@@ -13,11 +13,10 @@ body {
   color: #05386B;
 }
 
-.intro {
-  margin: 100px 0 175px 0;
-  font-size: 45px;
-  text-align: center;
-  text-transform: uppercase;
+/* TIMELINE
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+.timeline {
+  margin: 0 30px;
 }
 
 .timeline ul {

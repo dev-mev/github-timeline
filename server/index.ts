@@ -1,4 +1,4 @@
-const users = require("../api/users");
+const users = require("api/users");
 const bodyParser = require("body-parser");
 const express = require("express");
 const app = express();

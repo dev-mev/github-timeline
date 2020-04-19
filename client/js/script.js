@@ -4,35 +4,50 @@ $(document).ready(function () {
 
     $(".timeline").empty();
 
-    const username = encodeURI(event.target.elements["username"].value);
+    const username = event.target.elements["username"].value;
 
-    $.get("/api/users/" + username)
-      .then(function (data) {
-        const repos = data.user;
-        $(".timeline").append(("<ul class='repo-list'>"));
+    $.get(`/api/users/${encodeURI(username)}`)
+      .then((data) => {
+        const repos = data.user.repositories.nodes;
 
-        repos.repositories.nodes.forEach(element => {
-          const d = new Date(element.createdAt);
-          const year = new Intl.DateTimeFormat('en', { year: 'numeric' }).format(d)
-          const month = new Intl.DateTimeFormat('en', { month: 'long' }).format(d)
-          const day = new Intl.DateTimeFormat('en', { day: '2-digit' }).format(d)
+        if (repos.length > 0) {
+          $(".timeline").append(("<ul class='repo-list'>"));
 
-          $(".repo-list").append(
-            $("<li>").append(
-              $("<div>").append(
-                $("<time>").text(`${month} ${day}, ${year}`),
-                $(`<a href="${element.url}">`).text(element.name),
-                $("<p>").text(element.description)
+          repos.forEach(element => {
+            const d = new Date(element.createdAt);
+            const year = new Intl.DateTimeFormat("en", { year: "numeric" }).format(d);
+            const month = new Intl.DateTimeFormat("en", { month: "long" }).format(d);
+            const day = new Intl.DateTimeFormat("en", { day: "2-digit" }).format(d);
+  
+            $(".repo-list").append(
+              $("<li>").append(
+                $("<div>").append(
+                  $("<time>").text(`${month} ${day}, ${year}`),
+                  $("<a>").attr("href", element.url).attr("target", "_blank").text(element.name),
+                  $("<p>").text(element.description)
+                )
               )
             )
-          )
-        });
-      });
+          });
+        } else {
+          $(".timeline").append($("<p>This user has no public repos.</p>"));
+        }
 
-      createTimeLine();
+        // triggers makeLiVisible() which makes any li that's in the viewport visible
+        $(window).scroll();
+      })
+      .catch(err => {
+        if (err.status === 404) {
+          $(".timeline").append($("<p>").text("Could not find user " + username));
+        } else {
+          $(".timeline").append($("<p>Something went wrong, please try again.</p>"));
+        }
+      })
+
+      showTimeLine();
   });
 
-  function createTimeLine() {
+  function showTimeLine() {
     function isElementInViewport(el) {
       const rect = el.getBoundingClientRect();
 
@@ -44,7 +59,7 @@ $(document).ready(function () {
       );
     }
   
-    function callbackFunc() {
+    function makeLiVisible() {
       $(".timeline li").each((index, element) => {
         if (isElementInViewport(element)) {
           $(element).addClass("in-view");
@@ -53,6 +68,6 @@ $(document).ready(function () {
     }
 
     // listen for events
-    $(window).on('DOMContentLoaded load resize scroll', callbackFunc);
+    $(window).on("DOMContentLoaded load resize scroll", makeLiVisible);
   }
 });
